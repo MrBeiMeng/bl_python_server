@@ -18,5 +18,5 @@ install_router(ebbinghaus)  # 添加路由
 
 
 if __name__ == '__main__':
-    uvicorn.run(app='Web:app', host='127.0.0.1', port=9527, reload=True, debug=True)
+    uvicorn.run(app='run:app', host='0.0.0.0', port=9528, reload=True, debug=True)
 

@@ -13,11 +13,11 @@ def remove_params(b_url: str):
 
 
 # 获取b站视频列表
-def generateVideoList(bUrl: str):
+def generate_video_list(bUrl: str):
     # targetUrl = spiderService.generateBilibiliVideoUrl(vId)
-    videoPageList = spiderService.getBilibiliVideoPageList(bUrl)
+    video_page_list = spiderService.getBilibiliVideoPageList(bUrl)
 
-    return videoPageList
+    return video_page_list
 
 
 # 按不同的计划生成对应的plan
@@ -73,7 +73,7 @@ def get_plan_list(b_url: str, plan_duration: int):
 def get_suggestion_plan(b_url):
     bilibili_obj = spiderService.get_bilibili_obj(b_url)
     key_list = ["每天10分钟 要看", "每天15分钟 需要", "每天30分钟 需要", "每天一小时  要看", "每天两小时  则需要"]
-    value_list = [MyTime.MINUTE * 10, MyTime.FIFTEEN_MINUTE, MyTime.THIRTY_MINUTE, MyTime.HOUR, MyTime.HOUR * 2]
+    value_list = [MyTime.MINUTE * 10, MyTime.MINUTE * 15, MyTime.MINUTE * 30, MyTime.HOUR, MyTime.HOUR * 2]
 
     for i in range(len(value_list)):
         duration = value_list[i]

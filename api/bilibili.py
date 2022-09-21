@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from service import bilibiliService
+from service import bilibili_service
 
 app = APIRouter()
 prefix = "/bilibili"
@@ -9,7 +9,7 @@ tags = ["bilibili"]
 @app.get("/getVideoList", description='获取视频分集列表')
 async def get_video_list(b_url: str):
     b_url = bilibiliService.remove_params(b_url)
-    video_page_list = bilibiliService.generateVideoList(b_url)
+    video_page_list = bilibiliService.generate_video_list(b_url)
     return video_page_list
 
 
