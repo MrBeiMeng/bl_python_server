@@ -2,30 +2,21 @@ import copy
 import datetime
 
 from service import spiderService
-from obj.classDef import BilibiliVideoPage, MyTime
-
-
-def remove_params(b_url: str):
-    if b_url != "":
-        return b_url.split("?")[0]
-    else:
-        raise Exception("b_url 不能为空")
+from obj.classDef import VideoPage, MyTime, VideoInfo
 
 
 # 获取b站视频列表
-def generate_video_list(bUrl: str):
-    # targetUrl = spiderService.generateBilibiliVideoUrl(vId)
-    video_page_list = spiderService.getBilibiliVideoPageList(bUrl)
-
+def get_video_page_list(b_url: str):
+    video_page_list = spiderService.get_bilibili_video_page_list(b_url)
     return video_page_list
 
 
 # 按不同的计划生成对应的plan
-def generate_plan_video_list(video_page_list: list[BilibiliVideoPage], duration: int):
-    answer_list: list[list[BilibiliVideoPage]] = []
+def generate_plan_video_list(video_page_list: list[VideoPage], duration: int):
+    answer_list: list[list[VideoPage]] = []
     video_duration = 0
 
-    per_plan_list: list[BilibiliVideoPage] = []
+    per_plan_list: list[VideoPage] = []
 
     i = 0
     while i < len(video_page_list):
@@ -41,7 +32,7 @@ def generate_plan_video_list(video_page_list: list[BilibiliVideoPage], duration:
             tmp_duration = video_duration - duration
             while tmp_duration > 0:
                 video_second = item.durationSecond - tmp_duration  # 视频应当放映位置
-                item.moveToSecond(video_second)
+                item.move_to_second(video_second)
 
                 per_plan_list.append(copy.copy(item))
                 if tmp_duration > duration:
@@ -66,7 +57,7 @@ def generate_plan_video_list(video_page_list: list[BilibiliVideoPage], duration:
 
 
 def get_plan_list(b_url: str, plan_duration: int):
-    video_page_list = spiderService.getBilibiliVideoPageList(b_url)
+    video_page_list = spiderService.get_bilibili_video_page_list(b_url)
     return generate_plan_video_list(video_page_list, plan_duration)
 
 
@@ -90,3 +81,7 @@ def get_suggestion_plan(b_url):
 
 def _anal_duration(duration_total: int, duration_per: int):
     return int(duration_total / duration_per)
+
+
+def get_video_info(b_url) -> Exception | VideoInfo:
+    return spiderService.get_bilibili_video_info(b_url)

@@ -13,7 +13,7 @@ def install_router(obj):
     app.include_router(child_app, prefix=prefix, tags=tags)
 
 
-install_router(bilibili)  # 添加路由
+install_router(bilibili)    # 添加路由
 install_router(ebbinghaus)  # 添加路由
 
 

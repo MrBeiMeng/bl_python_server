@@ -16,31 +16,48 @@ class MyTime:
 
 class HtmlResult:
     title = None  # 页面标题
-    htmlContent = None  # 抓取结果
-    createAt = None
-    savingFileName = None
+    html_content = None  # 抓取结果
+    create_at = None
+    saving_file_name = None
 
-    def __init__(self, title, htmlContent):
+    def __init__(self, title, html_content):
         self.title = title
-        self.htmlContent = htmlContent
-        self.createAt = datetime.now().strftime("%y-%m-%d %H:%M")
-        self.savingFileName = "抓取结果" + self.title + self.createAt + ".html"
+        self.html_content = html_content
+        self.create_at = datetime.now().strftime("%y-%m-%d %H:%M")
+        self.saving_file_name = "抓取结果" + self.title + self.create_at + ".html"
 
     def save(self):
-        file = open(self.savingFileName, "w", encoding="utf-8")
-        file.write(self.htmlContent)
+        file = open(self.saving_file_name, "w", encoding="utf-8")
+        file.write(self.html_content)
         file.close()
 
 
-class BilibiliVideoPage:
+class VideoPage:
     title = ""
     url = ""
     indexInt = 0
     indexStr = "P1"
     durationSecond = 0
 
-    def moveToSecond(self, second: int):
+    def move_to_second(self, second: int):
         self.url += "&t=" + str(second)
+
+
+class VideoInfo:
+    title: str  # 视频标题
+    description: str  # 简介
+    upload_time: datetime  # 上传时间
+    has_page: bool  # 存在分集
+    page_list: list[VideoPage]  # 视频分集
+
+    def __init__(self, title: str, description: str, upload_time: str, page_list: list) -> None:
+        self.title = title
+        self.description = description
+        self.upload_time = datetime.strptime(upload_time, "%Y-%m-%d %H:%M:%S")
+        self.page_list = page_list
+        self.has_page = True
+        if len(page_list) == 0:
+            self.has_page = False
 
 
 class BilibiliHtmlResult(HtmlResult):
@@ -48,8 +65,8 @@ class BilibiliHtmlResult(HtmlResult):
     videoPageSize = None
     videoTotalDuration = 0
 
-    def __init__(self, title, htmlContent):
-        super().__init__(title, htmlContent)
+    def __init__(self, title, html_content):
+        super().__init__(title, html_content)
 
 
 class VideoPlan:
@@ -60,16 +77,16 @@ class VideoPlan:
 
     duration: int
     videoNum: int
-    VideoList: list[BilibiliVideoPage]
+    VideoList: list[VideoPage]
 
 
-def generatePlanList(list: list[BilibiliVideoPage], plan: int):
+def generate_plan_list(list: list[VideoPage], plan: int):
     pass
 
 
 class MyEncoder(json.JSONEncoder):
     def default(self, obj):
-        if isinstance(obj, BilibiliVideoPage):
+        if isinstance(obj, VideoPage):
             return {"title": obj.title, "url": obj.url, "indexInt": obj.indexInt, "indexStr": obj.indexStr,
                     "duration": obj.durationSecond}
         # elif isinstance(obj, array):
