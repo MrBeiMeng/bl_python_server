@@ -1,4 +1,6 @@
 from fastapi import APIRouter
+
+from obj.resp.classDef import BVideoInfoResponse
 from service import bilibili_service
 
 app = APIRouter()
@@ -27,10 +29,12 @@ async def get_video_list(b_url: str):
 async def get_video_info(b_url: str):
     try:
         b_url = format_bilibili_url(b_url)
-        video_page_list = bilibili_service.get_video_info(b_url)
+        video_info = bilibili_service.get_video_info(b_url)
+        resp = BVideoInfoResponse(video_info)
     except Exception as e:
-        return e
-    return video_page_list
+        print(e.args)
+        return e.args
+    return resp
 
 
 @app.get("/getPlanList", description='通过不同计划安排视频分集列表')

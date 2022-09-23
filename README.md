@@ -1,6 +1,8 @@
 # python 个人服务器
 
-> 将平常使用的一些url都放到这个服务器统一进行管理
+> ![image-20220923104103012](https://ccurj.oss-cn-beijing.aliyuncs.com/mac-typoraimage-20220923104103012.png)
+>
+> <img src="https://ccurj.oss-cn-beijing.aliyuncs.com/mac-typoraimage-20220923104840979.png" alt="image-20220923104840979" style="zoom:25%;" />
 
 
 
