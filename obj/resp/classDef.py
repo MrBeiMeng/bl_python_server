@@ -28,13 +28,15 @@ class BVideoInfoResponse:
     description: str  # 简介
     upload_time: str  # 上传时间
     video_total_duration: str  # 总时长 单位秒
-    page_list = None  # 视频分集
+    video_total_duration_1_25: str  # 总时长 单位秒
+    video_total_duration_1_5: str  # 总时长 单位秒
+    video_total_duration_2: str  # 总时长 单位秒
 
     def __init__(self, video_info: VideoInfo):
         self.title = video_info.title
         self.description = video_info.description
         self.upload_time = video_info.upload_time.strftime("%Y-%m-%d %H:%M:%S")
-        self.page_list = video_info.page_list
-        if not video_info.has_page:
-            self.page_list = ""
         self.video_total_duration = format_duration(video_info.video_total_duration)
+        self.video_total_duration_1_25 = format_duration(video_info.video_total_duration_1_25)
+        self.video_total_duration_1_5 = format_duration(video_info.video_total_duration_1_5)
+        self.video_total_duration_2 = format_duration(video_info.video_total_duration_2)

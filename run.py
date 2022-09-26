@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
-from api import bilibili
-from api import ebbinghaus
+from controller import bilibili
+from controller import ebbinghaus
 
 app = FastAPI()
 
