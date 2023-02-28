@@ -3,6 +3,13 @@
   <component name="PublishConfigData" serverName="腾讯云" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
     <option name="confirmBeforeUploading" value="false" />
     <serverData>
+      <paths name="测试虚拟主机1">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/root/personal_python_server" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="腾讯云">
         <serverdata>
           <mappings>

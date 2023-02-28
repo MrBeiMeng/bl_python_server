@@ -57,7 +57,7 @@ def equal(a, b):
 
 
 def main():
-    host = "localhost"
+    host = "0.0.0.0"
     port = 9528
     if len(sys.argv) > 0:
         for i in range(1, len(sys.argv)):
