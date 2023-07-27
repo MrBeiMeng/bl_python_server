@@ -68,7 +68,7 @@ def get_suggestion_plan(b_url):
 
     for i in range(len(value_list)):
         duration = value_list[i]
-        days = int(bilibili_obj.video_total_duration / duration)
+        days = int(bilibili_obj.videoTotalDuration / duration)
         now_time = datetime.datetime.now()
         to_time = now_time + datetime.timedelta(days=days)
 

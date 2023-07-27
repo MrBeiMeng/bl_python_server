@@ -31,7 +31,7 @@ RUN cd $RUN_PATH && \
 
 EXPOSE 9528
 
-CMD ["python","run.py"]
+CMD ["python","run.py","--host=0.0.0.0"]
 
 
 #tee /etc/apt/sources.list << EOF
