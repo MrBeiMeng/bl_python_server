@@ -10,6 +10,63 @@ def get_video_page_list(b_url: str):
     video_page_list = spiderService.get_bilibili_video_page_list(b_url)
     return video_page_list
 
+def seconds_to_hh_mm_ss(seconds):
+    hours = seconds // 3600
+    remaining_seconds = seconds % 3600
+    minutes = remaining_seconds // 60
+    seconds = remaining_seconds % 60
+    answer_str = ""
+
+    if hours > 0:
+        answer_str += f"{int(hours):02d}:"
+    if minutes >0:
+        answer_str += f"{int(minutes):02d}:"
+
+    answer_str += f"{int(seconds):02d}"
+    return answer_str
+
+
+# 按不同的计划生成对应的plan
+def generate_plan_video_list_v2(video_page_list: list[VideoPage], duration: int):
+    answer_list: list[list[VideoPage]] = []
+    video_duration = 0  # 表示每次计划的视频时长，而duration是预期的时长
+
+    per_plan_list: list[VideoPage] = []
+
+    pointer: int = 0  # 指向爬取来的video_p_l的索引指针
+
+    # 每次循环都要分一个组出来，直到pointer越界
+    while True:
+        if pointer >= len(video_page_list):
+            break
+        item = video_page_list[pointer]
+
+        if video_duration + item.durationSecond < duration:  # 算上这个视频，总时长不足分段时长
+            per_plan_list.append(copy.copy(item))
+            video_duration += item.durationSecond
+            pointer += 1
+        else:
+            total_duration = (video_duration + item.durationSecond)  # 表示距离目标相差的时间
+            if total_duration > duration:
+                item.comment = "看到{}就可以啦".format(seconds_to_hh_mm_ss(item.durationSecond - (total_duration - duration)))
+                per_plan_list.append(copy.copy(item))
+                item.comment = ""
+                item.move_to_second(item.durationSecond - (total_duration - duration))  # 这是下一次要从哪开始看的标志，也是本次要看到哪里的时长
+                item.durationSecond = total_duration - duration  # 超出的时间也表示下次要看多久
+            else:
+                item.comment = "要把这一集看完"
+                per_plan_list.append(copy.copy(item))
+                item.durationSecond = 0
+                pointer += 1  # 所有视频分配完成，表示结束循环
+            video_duration = 0
+            # 下面是每次计划录入最终结果中
+            answer_list.append(copy.copy(per_plan_list))
+            per_plan_list.clear()
+
+    if len(per_plan_list) > 0:
+        answer_list.append(copy.copy(per_plan_list))
+    return answer_list
+
 
 # 按不同的计划生成对应的plan
 def generate_plan_video_list(video_page_list: list[VideoPage], duration: int):
@@ -39,7 +96,7 @@ def generate_plan_video_list(video_page_list: list[VideoPage], duration: int):
                     answer_list.append(copy.copy(per_plan_list))
                     per_plan_list.clear()
                     tmp_duration -= duration
-                else:
+                else:  # 比如时间剩下五分钟，而视频还有半小时，后面的的在这个item上就不算了
                     video_duration = tmp_duration
                     tmp_duration = 0
 
@@ -47,7 +104,7 @@ def generate_plan_video_list(video_page_list: list[VideoPage], duration: int):
         video_duration += item.durationSecond
         per_plan_list.append(item)
 
-        if video_duration + item.durationSecond > video_duration:
+        if video_duration > duration:
             video_duration = item.durationSecond
             answer_list.append(copy.copy(per_plan_list))
             per_plan_list.clear()
@@ -58,7 +115,7 @@ def generate_plan_video_list(video_page_list: list[VideoPage], duration: int):
 
 def get_plan_list(b_url: str, plan_duration: int):
     video_page_list = spiderService.get_bilibili_video_page_list(b_url)
-    return generate_plan_video_list(video_page_list, plan_duration)
+    return generate_plan_video_list_v2(video_page_list, plan_duration)
 
 
 def get_suggestion_plan(b_url):

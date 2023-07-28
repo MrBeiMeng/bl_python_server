@@ -9,8 +9,10 @@ def back_print(log: str):
 
 
 if __name__ == '__main__':
-    flag = False
+    task_name = "概率论与数理统计"
+    day = 77
+    reverse = True
 
-    res = 1 if flag else 2
-
-    print(res)
+    num_list = range(day) if not reverse else range(day- 1, -1, -1)
+    for i in num_list:
+        print(f"{task_name}第{i+1}天计划")

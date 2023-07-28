@@ -1,8 +1,10 @@
 import sys
 
 import uvicorn
-from fastapi import FastAPI
+import logging
+from fastapi import FastAPI, Request
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse
 
 from controller import bilibili
 from controller import ebbinghaus
@@ -36,6 +38,23 @@ app.add_middleware(
     # max_age=1000
 )
 
+# 关闭 FastAPI 的 INFO 日志
+logging.getLogger("fastapi").setLevel(logging.WARNING)
+
+
+# 全局拦截
+@app.middleware("http")
+async def catch_exceptions(request: Request, call_next):
+    global log
+    try:
+        log = f"{request.client.host}:{request.headers.get('User-Agent')}|{request.method}:{request.url}"
+        # print(log)
+        return await call_next(request)
+    except Exception as e:
+        logging.error(f"发生错误:{str(e)},\033[32m在请求此url时s:\033[0m:{log}")
+        error_response = {"error": str(e)}
+        return JSONResponse(status_code=500, content=error_response)
+
 
 def install_router(obj):
     child_app = obj.app
@@ -46,10 +65,6 @@ def install_router(obj):
 
 install_router(bilibili)  # 添加路由
 install_router(ebbinghaus)  # 添加路由
-
-
-# if __name__ == '__main__':
-#     uvicorn.run(app='run:app', host='0.0.0.0', port=9528, reload=True, debug=True)
 
 
 def equal(a, b):
@@ -71,7 +86,10 @@ def main():
         # myDebug('参数个数为:{}个参数。'.format(len(sys.argv)))
         # for i in range(0, len(sys.argv)):
         #     myDebug('参数 %s 为：%s' % (i, sys.argv[i]))
-    uvicorn.run(app, host=host, port=port)
+    log_config = uvicorn.config.LOGGING_CONFIG
+    log_config["formatters"]["access"]["fmt"] = "%(asctime)s - \033[32m%(levelname)s:\033[0m: %(message)s"
+    # log_config["formatters"]["default"]["fmt"] = "%(asctime)s - \033[32m%(levelname)s:\033[0m: %(message)s"
+    uvicorn.run(app, host=host, port=port, log_config=log_config)
 
 
 if __name__ == '__main__':
